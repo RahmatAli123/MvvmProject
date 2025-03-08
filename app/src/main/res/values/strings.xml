@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mvvm Auth</string>
+    <string name="loginText">We missed you! Login to continue \n your journey with us</string>
+    <string name="text1">Fill your information below or \n register with social media account</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
