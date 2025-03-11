@@ -1,6 +1,7 @@
-package com.example.mvvmauth
+package com.example.mvvmauth.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.mvvmauth.ProductDataModel
+import com.example.mvvmauth.ProductDetailActivity
+import com.example.mvvmauth.R
 
 class UserAdapter(private val userList:ArrayList<ProductDataModel>, private val myContext: Context): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     inner class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -34,6 +38,14 @@ class UserAdapter(private val userList:ArrayList<ProductDataModel>, private val 
         holder.priceTextView.text = currentUser.price
         holder.descriptionTextView.text = currentUser.description
         Glide.with(myContext).load(currentUser.image).into(holder.productImageView)
+        holder.itemView.setOnClickListener {
+            val intent = Intent(myContext, ProductDetailActivity::class.java)
+            intent.putExtra("productImage", currentUser.image)
+            intent.putExtra("productName", currentUser.name)
+            intent.putExtra("productPrice", currentUser.price)
+            intent.putExtra("productDescription", currentUser.description)
+            myContext.startActivity(intent)
+        }
 
     }
 }

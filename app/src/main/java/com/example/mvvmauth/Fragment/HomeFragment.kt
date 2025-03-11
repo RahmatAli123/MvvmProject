@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvmauth.AllViewModel.ProductViewModel
 import com.example.mvvmauth.ProductDataModel
 import com.example.mvvmauth.R
-import com.example.mvvmauth.UserAdapter
-import com.example.mvvmauth.AllViewModel.UserViewModel
+import com.example.mvvmauth.Adapter.UserAdapter
 
 class HomeFragment : Fragment() {
     private lateinit var myRecyclerView: RecyclerView

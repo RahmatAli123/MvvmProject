@@ -1,10 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context=".ProductDetailActivity">
+    <ImageView
+        android:id="@+id/productDetails_ImageView"
+        android:layout_width="match_parent"
+        android:layout_height="295dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        android:padding="10dp"
+        android:src="@drawable/ic_launcher_background" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Product Name -->
+    <TextView
+        android:id="@+id/productDetailsName_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Nike Sneakers"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/productDetailsPrice_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="₹2,993"
+            />
+
+<!--        <TextView-->
+<!--            android:id="@+id/discountPrice"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="₹1,500"-->
+<!--            android:textColor="#DD2C00"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold" />-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:text="(50% OFF)"-->
+<!--            android:textColor="#00C853"-->
+<!--            android:textSize="14sp" />-->
+    </LinearLayout>
+
+    <!-- Product Details -->
+
+    <TextView
+        android:id="@+id/productDetailsDescription_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="Description"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:layout_marginTop="30dp"
+        >
+
+        <Button
+            android:id="@+id/addToCart_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginHorizontal="10dp"
+            android:text="Add To Cart"
+
+
+            />
+
+        <Button
+            android:id="@+id/buyNow_Button"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_height="wrap_content"
+            android:text="Buy Now"
+
+            />
+    </LinearLayout>
+
+    <!-- Delivery Info -->
+    <TextView
+        android:id="@+id/deliveryInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="#FFCCD5"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Delivery in 1 Hour"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+
+</LinearLayout>

@@ -56,6 +56,7 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel)
     implementation (libs.androidx.lifecycle.livedata.ktx)
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("com.razorpay:checkout:1.6.26")
 
 
 }

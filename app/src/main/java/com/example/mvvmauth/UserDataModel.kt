@@ -1,6 +1,7 @@
 package com.example.mvvmauth
 
 class ProductDataModel (
+    val id: String?=null,
     val image: String?=null,
     val name: String?=null,
     var price: String?=null,
