@@ -2,17 +2,17 @@ package com.example.mvvmauth.Fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mvvmauth.AllViewModel.ProductViewModel
-import com.example.mvvmauth.ProductDataModel
-import com.example.mvvmauth.R
 import com.example.mvvmauth.Adapter.UserAdapter
+import com.example.mvvmauth.AllDataModel.ProductDataModel
+import com.example.mvvmauth.AllViewModel.ProductViewModel
+import com.example.mvvmauth.R
 
 class HomeFragment : Fragment() {
     private lateinit var myRecyclerView: RecyclerView
