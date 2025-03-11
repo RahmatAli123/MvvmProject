@@ -2,7 +2,7 @@ package com.example.mvvmauth.AllViewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mvvmauth.ProfileModel
+import com.example.mvvmauth.AllDataModel.ProfileDataModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,27 +13,27 @@ class ProfileViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance().getReference("MvvmAuth")
 
-    private val _profileUpdateStatus = MutableLiveData<ProfileModel>()
-    val updateStatus: MutableLiveData<ProfileModel> = _profileUpdateStatus
+    private val _profileUpdateStatus = MutableLiveData<ProfileDataModel>()
+    val updateStatus: MutableLiveData<ProfileDataModel> = _profileUpdateStatus
 
-    private val _userList = MutableLiveData<List<ProfileModel>>()
-    val userList: MutableLiveData<List<ProfileModel>> = _userList
+    private val _userList = MutableLiveData<List<ProfileDataModel>>()
+    val userList: MutableLiveData<List<ProfileDataModel>> = _userList
 
     fun updateProfile(name: String, email: String, imageUri: String) {
         val user = auth.currentUser
         if (user != null) {
             val userId = user.uid
-            val profileUpdates = mutableMapOf<String, Any>()
-            profileUpdates["name"] = name
-            profileUpdates["email"] = email
-            profileUpdates["image"] = imageUri
-            database.child(userId).updateChildren(profileUpdates)
+            val profileHashMapUpdates = HashMap<String, Any>()
+            profileHashMapUpdates["name"] = name
+            profileHashMapUpdates["email"] = email
+            profileHashMapUpdates["image"] = imageUri
+            database.child(userId).updateChildren(profileHashMapUpdates)
                 .addOnSuccessListener {
-                    _profileUpdateStatus.postValue(ProfileModel(name, email, imageUri)) // Update successful
+                    _profileUpdateStatus.postValue(ProfileDataModel(name, email, imageUri)) // Update successful
 
                 }
                 .addOnFailureListener {
-                    _profileUpdateStatus.postValue(ProfileModel())
+                    _profileUpdateStatus.postValue(ProfileDataModel())
                 }
         }
     }
@@ -41,9 +41,9 @@ class ProfileViewModel : ViewModel() {
     fun profileFetchUsers() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val userList = mutableListOf<ProfileModel>()
+                val userList = mutableListOf<ProfileDataModel>()
                 for (userSnapshot in snapshot.children) {
-                    val user = userSnapshot.getValue(ProfileModel::class.java)
+                    val user = userSnapshot.getValue(ProfileDataModel::class.java)
                     if (user != null) {
                         userList.add(user)
                     }
@@ -52,7 +52,7 @@ class ProfileViewModel : ViewModel() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                _userList.postValue(emptyList()) // In case of error, return empty list
+                _userList.postValue(emptyList())
             }
         })
     }

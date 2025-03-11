@@ -37,7 +37,7 @@ class SignUpActivity : AppCompatActivity() {
             val password = signUpPasswordEditText.text.toString()
 
             if (validateInput(name,email, password)) {
-                viewModel.createSignUp(name, email, password, image = "")
+                viewModel.createSignUp(name, email, password)
                 Toast.makeText(this, "register successfully", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, LoginActivity::class.java))
             }

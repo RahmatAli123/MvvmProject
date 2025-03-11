@@ -2,7 +2,7 @@ package com.example.mvvmauth.AllViewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mvvmauth.ProductDataModel
+import com.example.mvvmauth.AllDataModel.ProductDataModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
