@@ -57,12 +57,6 @@ class ProductDetailActivity : AppCompatActivity() {
             intent.putExtra("productImage",productImage)
             startActivity(intent)
         }
-
-
-
-
-
-
     }
 
 }

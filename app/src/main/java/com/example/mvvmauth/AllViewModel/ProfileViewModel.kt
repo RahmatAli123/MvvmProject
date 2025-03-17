@@ -1,5 +1,6 @@
 package com.example.mvvmauth.AllViewModel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mvvmauth.AllDataModel.ProfileDataModel
@@ -14,28 +15,25 @@ class ProfileViewModel : ViewModel() {
     private val database = FirebaseDatabase.getInstance().getReference("MvvmAuth")
 
     private val _profileUpdateStatus = MutableLiveData<ProfileDataModel>()
-    val updateStatus: MutableLiveData<ProfileDataModel> = _profileUpdateStatus
+    val updateStatus: LiveData<ProfileDataModel> get() = _profileUpdateStatus
 
     private val _userList = MutableLiveData<List<ProfileDataModel>>()
-    val userList: MutableLiveData<List<ProfileDataModel>> = _userList
+    val userList: LiveData<List<ProfileDataModel>> get() = _userList
 
-    fun updateProfile(name: String, email: String, imageUri: String) {
-        val user = auth.currentUser
-        if (user != null) {
-            val userId = user.uid
+    fun updateProfile(name: String, email: String, image: String) {
+        val userId = auth.currentUser!!.uid
             val profileHashMapUpdates = HashMap<String, Any>()
             profileHashMapUpdates["name"] = name
             profileHashMapUpdates["email"] = email
-            profileHashMapUpdates["image"] = imageUri
+            profileHashMapUpdates["image"] = image
             database.child(userId).updateChildren(profileHashMapUpdates)
                 .addOnSuccessListener {
-                    _profileUpdateStatus.postValue(ProfileDataModel(name, email, imageUri)) // Update successful
+                    _profileUpdateStatus.postValue(ProfileDataModel(name, email, image)) // Update successful
 
                 }
                 .addOnFailureListener {
                     _profileUpdateStatus.postValue(ProfileDataModel())
                 }
-        }
     }
 
     fun profileFetchUsers() {

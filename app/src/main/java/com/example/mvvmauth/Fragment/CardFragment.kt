@@ -36,42 +36,32 @@ class CardFragment : Fragment(), DeleteCartItem {
         cartRecyclerView = view.findViewById(R.id.cartRecyclerView)
         cartList = ArrayList()
         cartAdapter = AddToCartAdapter(cartList, this)
-
         cartRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartRecyclerView.adapter = cartAdapter
-
         cartDataViewModel = ViewModelProvider(this)[FetchCartDataViewModel::class.java]
         cartDataViewModel.fetchCartData()
-
         cartDataViewModel.productList.observe(viewLifecycleOwner) { cartItem ->
             cartList.clear()
             cartList.addAll(cartItem)
             cartAdapter.notifyDataSetChanged()
         }
-
         return view
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun deleteItem(position: Int, data: AddToCartDataModel) {
         val user = FirebaseAuth.getInstance().currentUser
-        if (user == null) {
-            Log.e("FirebaseAuth", "User not logged in")
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         db.getReference("products").child("cart")
-            .child(user.uid).child(data.cartId ?: "")
+            .child(user!!.uid).child(data.cartId.toString())
             .removeValue()
             .addOnSuccessListener {
                 cartList.removeAt(position)
                 cartAdapter.notifyDataSetChanged()
                 Toast.makeText(requireContext(), "Delete Success", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { exception ->
-                Log.e("FirebaseError", "Failed to delete: ${exception.message}", exception)
-                Toast.makeText(requireContext(), "Delete Failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Delete Failed: ${it.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
     }
 }

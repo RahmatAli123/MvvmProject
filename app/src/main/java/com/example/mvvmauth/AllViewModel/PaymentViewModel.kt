@@ -12,13 +12,13 @@ class PaymentViewModel: ViewModel() {
         val co = Checkout()
         co.setKeyID("rzp_test_7QRDUFvP75uLJS")
 
-        // Price check karna zaroori hai
+        // Price check karna priori hai
         if (price.isNullOrEmpty()) {
             Toast.makeText(activity, "Invalid Price", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val cleanedPrice = price.replace("₹", "").trim()  // ₹ hatao aur trim karo
+        val cleanedPrice = price.replace("₹", "")
 
         val amount = try {
             (cleanedPrice.toDouble() * 100).toInt()  // Convert to paisa

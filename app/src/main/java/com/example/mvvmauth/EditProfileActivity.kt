@@ -3,8 +3,10 @@ package com.example.mvvmauth
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,6 +20,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mvvmauth.AllViewModel.ProfileViewModel
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
 
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var profileImageView: ImageView
@@ -26,7 +32,10 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var editImageView: ImageView
     private lateinit var updateButton: androidx.appcompat.widget.AppCompatButton
     private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var mProgressDialog: ProgressDialog
     private var imageUri: Uri? = null
+    private var imageUpdated: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
@@ -49,62 +58,127 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         editImageView.setOnClickListener {
-            if (checkPermissions()) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
+                    112
+                )
+            } else {
                 showImageSelectionOptions()
             }
         }
 
-
         updateButton.setOnClickListener {
-            val name = editNameEditText.text.toString()
-            val email = editEmailEditText.text.toString()
-            if (name.isNotEmpty() && email.isNotEmpty()) {
-                profileViewModel.updateProfile(name, email, imageUri.toString())
-                Toast.makeText(this, "Update Profile", Toast.LENGTH_SHORT).show()
+            val updatedName = editNameEditText.text.toString()
+            val updatedEmail = editEmailEditText.text.toString()
+
+            if (updatedName.isEmpty() || updatedEmail.isEmpty()) {
+                Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
+            mProgressDialog = ProgressDialog(this)
+            mProgressDialog.setMessage("Updating profile...")
+            mProgressDialog.show()
 
+            if (imageUpdated) {
+                uploadImage(updatedName, updatedEmail)
+            } else {
+                profileViewModel.updateProfile(updatedName, updatedEmail, image ?: "")
+            }
         }
-        profileViewModel.updateStatus.observe(this, Observer {
-            if (it != null) {
-                Toast.makeText(this, "Update Profile", Toast.LENGTH_SHORT).show()
+
+        // Observe update status
+        profileViewModel.updateStatus.observe(this, Observer { success ->
+            mProgressDialog.dismiss()
+            if (success != null) {
+                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                 finish()
+            } else {
+                Toast.makeText(this, "Profile update failed", Toast.LENGTH_SHORT).show()
             }
+
         })
-
-
-        }
-
-    private fun checkPermissions(): Boolean {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        )
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                100
-            )
-        return true
-
-
     }
-
 
     @SuppressLint("IntentReset")
     private fun showImageSelectionOptions() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.type = "image/*"
-        startActivityForResult(galleryIntent, 100)
+        val chooserIntent = Intent.createChooser(galleryIntent, "Select Image")
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
+        startActivityForResult(chooserIntent, 100)
     }
 
-    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
+    @Deprecated("This method is deprecated, but using for demonstration")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100 && resultCode == Activity.RESULT_OK && data?.data != null) {
-            imageUri = data.data
-            profileImageView.setImageURI(imageUri)
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            if (data?.data != null) {
+                imageUri = data.data
+                profileImageView.setImageURI(imageUri)
+                imageUpdated = true
+            } else if (data?.extras?.get("data") != null) {
+                val bitmap = data.extras?.get("data") as Bitmap
+                profileImageView.setImageBitmap(bitmap)
+                imageUri = getImageUri(bitmap)
+                imageUpdated = true
+            }
+        }
+    }
+
+    private fun getImageUri(inImage: Bitmap): Uri? {
+        return try {
+            val fileName = "IMG_${System.currentTimeMillis()}.jpg"
+            val file = File(getExternalFilesDir(null), fileName)
+
+            val outStream = FileOutputStream(file)
+            inImage.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+            outStream.flush()
+            outStream.close()
+            Uri.fromFile(file)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 112 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            showImageSelectionOptions()
+        } else {
+            Toast.makeText(this, "Permissions required for this action", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun uploadImage(name: String, email: String) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+        if (imageUri != null) {
+            imageRef.putFile(imageUri!!).addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener {
+                    val image = it.toString()
+                    profileViewModel.updateProfile(name, email, image)
+                    Toast.makeText(this, "Image Upload successfully", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }

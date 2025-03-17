@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val buttonNavigation= findViewById<BottomNavigationView>(R.id.bottom_NavigationView)
         homeFragment(HomeFragment())
+
         buttonNavigation.setOnItemSelectedListener { item ->
 
             if (item.itemId== R.id.home_item) {

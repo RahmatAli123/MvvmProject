@@ -10,26 +10,21 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class FetchCartDataViewModel: ViewModel() {
-    val productList = MutableLiveData<ArrayList<AddToCartDataModel>>()
+class FetchCartDataViewModel : ViewModel() {
+    val productList = MutableLiveData<List<AddToCartDataModel>>()
     private val db = FirebaseDatabase.getInstance()
 
     fun fetchCartData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-
         db.getReference("products").child("cart").child(userId!!)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val cartList = ArrayList<AddToCartDataModel>()
                     for (data in snapshot.children) {
-                        try {
                             val item = data.getValue(AddToCartDataModel::class.java)
                             if (item != null) {
                                 cartList.add(item)
                             }
-                        } catch (e: Exception) {
-                            Log.e("FirebaseError", "Data conversion error: ${e.message}")
-                        }
                     }
                     productList.postValue(cartList)
                 }
@@ -38,4 +33,5 @@ class FetchCartDataViewModel: ViewModel() {
                     Log.e("FirebaseError", "Error fetching cart data: ${error.message}")
                 }
             })
-    }}
+    }
+}

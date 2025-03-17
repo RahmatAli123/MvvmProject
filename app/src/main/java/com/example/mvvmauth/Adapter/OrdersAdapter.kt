@@ -1,5 +1,6 @@
 package com.example.mvvmauth.Adapter
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -18,6 +19,7 @@ class OrdersAdapter(val orderList:ArrayList<OrderDataModel>):RecyclerView.Adapte
 
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       val view=View.inflate(parent.context,R.layout.order_item_layout,null)
         return ViewHolder(view)

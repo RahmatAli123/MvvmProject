@@ -13,35 +13,29 @@ import com.google.firebase.database.ValueEventListener
 class MyOrderViewModel: ViewModel()  {
     val orderList = MutableLiveData<ArrayList<OrderDataModel>>()
     private val db = FirebaseDatabase.getInstance()
-    private val userId= FirebaseAuth.getInstance().currentUser?.uid
+    private val userId= FirebaseAuth.getInstance().currentUser?.uid.toString()
+
 
     fun fetchOrderData() {
-        db.getReference("products").child("orders").child(userId!!).addValueEventListener(object : ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val orderList = ArrayList<OrderDataModel>()
-                for (data in snapshot.children){
-                    try {
-                        val item = data.getValue(OrderDataModel::class.java)
-                        if (item != null) {
-                            orderList.add(item)
+            db.getReference("orders").child(userId).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val orderList = ArrayList<OrderDataModel>()
+                    for (data in snapshot.children){
+                            val item = data.getValue(OrderDataModel::class.java)
+                            if (item != null) {
+                                orderList.add(item)
+                            }
                         }
-                        } catch (e: Exception) {
-                        Log.e("FirebaseError", "Data conversion error: ${e.message}")
-                    }
-                    this@MyOrderViewModel.orderList.postValue(orderList)
-
+                        this@MyOrderViewModel.orderList.postValue(orderList)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@MyOrderViewModel.orderList.postValue(null)
+                    Log.e("FirebaseError", "Error fetching order data: ${error.message}")
                 }
 
+            })
 
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error fetching order data: ${error.message}")
-
-            }
-
-        })
 
     }
 }

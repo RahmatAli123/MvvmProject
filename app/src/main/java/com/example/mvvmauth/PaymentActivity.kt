@@ -1,6 +1,7 @@
 package com.example.mvvmauth
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -15,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mvvmauth.AllViewModel.PaymentViewModel
+import com.example.mvvmauth.Fragment.OrderFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.razorpay.PaymentData
@@ -23,8 +25,8 @@ import java.util.UUID
 
 class PaymentActivity : AppCompatActivity(),PaymentResultWithDataListener {
     private var db=FirebaseDatabase.getInstance()
-    val id = UUID.randomUUID().toString()
     private lateinit var paymentViewModel: PaymentViewModel
+    private val random=UUID.randomUUID().toString()
     private val hashMap=HashMap<String,Any>()
     private lateinit var productImageView: ImageView
     private lateinit var productTittleTV: TextView
@@ -32,7 +34,6 @@ class PaymentActivity : AppCompatActivity(),PaymentResultWithDataListener {
     private lateinit var productPriceTV: TextView
     private lateinit var productPriceTV1: TextView
     private lateinit var productPriceTV2: TextView
-
     private lateinit var proceedBtn: AppCompatButton
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +55,7 @@ class PaymentActivity : AppCompatActivity(),PaymentResultWithDataListener {
         val productPrice=intent.getStringExtra("productPrice")
         val productImage=intent.getStringExtra("productImage")
 
-
-        hashMap["id"]=id
+        hashMap["orderId"]=random
         hashMap["productTittle"]=productTittle.toString()
         hashMap["productDes"]=productDes.toString()
         hashMap["productPrice"]=productPrice.toString()
@@ -76,9 +76,10 @@ class PaymentActivity : AppCompatActivity(),PaymentResultWithDataListener {
     }
 
     override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
-        val uuid=FirebaseAuth.getInstance().currentUser?.uid
-        db.getReference("products").child(uuid.toString()).child(id).setValue(hashMap)
+        val uuid=FirebaseAuth.getInstance().currentUser?.uid.toString()
+        db.getReference("orders").child(uuid).child(random).setValue(hashMap)
             .addOnSuccessListener {
+
                 Toast.makeText(this, "myOrder Successful", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
