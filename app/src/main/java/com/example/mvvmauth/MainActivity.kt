@@ -1,13 +1,8 @@
 package com.example.mvvmauth
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvmauth.Fragment.CardFragment
 import com.example.mvvmauth.Fragment.HomeFragment
 import com.example.mvvmauth.Fragment.OrderFragment
@@ -56,16 +51,5 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-
-//
-//        viewModel = ViewModelProvider(this)[UserViewModel::class.java]
-//
-//        viewModel.userListLiveData.observe(this, Observer { userListData ->
-//            userList.clear()
-//            userList.addAll(userListData)
-//            userAdapter.notifyDataSetChanged()
-//        })
-//
-//        viewModel.fetchUsers()
 
 }

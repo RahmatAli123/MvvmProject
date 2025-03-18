@@ -18,7 +18,7 @@ class OrderFragment : Fragment() {
    private lateinit var myOrderRecyclerView: RecyclerView
    private lateinit var orderAdapter: OrdersAdapter
    private lateinit var orderList:ArrayList<OrderDataModel>
-   private lateinit var orderViewModel: MyOrderViewModel
+   lateinit var orderViewModel: MyOrderViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,14 +37,15 @@ class OrderFragment : Fragment() {
         orderAdapter = OrdersAdapter(orderList)
         myOrderRecyclerView.adapter = orderAdapter
         orderViewModel = ViewModelProvider(this)[MyOrderViewModel::class.java]
-        orderViewModel.fetchOrderData()
-        orderViewModel.orderList.observe(viewLifecycleOwner) { orderList ->
+
+        orderViewModel.orderList.observe(viewLifecycleOwner) { updatedList ->
             orderList.clear()
-            orderList.addAll(orderList)
+            orderList.addAll(updatedList)
             orderAdapter.notifyDataSetChanged()
 
-        }
 
+        }
+        orderViewModel.fetchOrderData()
         return view
     }
 

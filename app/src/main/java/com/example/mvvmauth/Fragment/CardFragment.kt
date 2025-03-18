@@ -32,7 +32,6 @@ class CardFragment : Fragment(), DeleteCartItem {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_card, container, false)
-
         cartRecyclerView = view.findViewById(R.id.cartRecyclerView)
         cartList = ArrayList()
         cartAdapter = AddToCartAdapter(cartList, this)

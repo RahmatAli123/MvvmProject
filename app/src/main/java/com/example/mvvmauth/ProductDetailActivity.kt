@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mvvmauth.AllViewModel.ProductDetailsViewModel
-import com.example.mvvmauth.Fragment.CardFragment
 
 class ProductDetailActivity : AppCompatActivity() {
     private lateinit var productDetailsImageView: ImageView
@@ -19,6 +18,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var addToCartButton: Button
     private lateinit var buyNowButton: Button
     private lateinit var viewModel: ProductDetailsViewModel
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {

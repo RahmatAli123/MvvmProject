@@ -15,7 +15,6 @@ class MyOrderViewModel: ViewModel()  {
     private val db = FirebaseDatabase.getInstance()
     private val userId= FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-
     fun fetchOrderData() {
             db.getReference("orders").child(userId).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

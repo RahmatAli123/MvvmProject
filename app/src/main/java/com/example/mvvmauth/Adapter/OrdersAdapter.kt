@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.mvvmauth.AllDataModel.OrderDataModel
 import com.example.mvvmauth.R
 
-class OrdersAdapter(val orderList:ArrayList<OrderDataModel>):RecyclerView.Adapter<OrdersAdapter.ViewHolder>() {
+class OrdersAdapter(private val orderList:ArrayList<OrderDataModel>):RecyclerView.Adapter<OrdersAdapter.ViewHolder>() {
     inner class ViewHolder(item:View):RecyclerView.ViewHolder(item){
         val orderImageView=item.findViewById<ImageView>(R.id.orderImageView)
         val orderTittle=item.findViewById<TextView>(R.id.orderTittle)
@@ -41,4 +41,10 @@ class OrdersAdapter(val orderList:ArrayList<OrderDataModel>):RecyclerView.Adapte
 
 
     }
+//    @SuppressLint("NotifyDataSetChanged")
+//    fun updateList(newList: ArrayList<OrderDataModel>) {
+//        orderList.clear()
+//        orderList.addAll(newList)
+//        notifyDataSetChanged()
+//    }
 }

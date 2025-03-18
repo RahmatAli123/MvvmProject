@@ -79,6 +79,9 @@ class PaymentActivity : AppCompatActivity(),PaymentResultWithDataListener {
         val uuid=FirebaseAuth.getInstance().currentUser?.uid.toString()
         db.getReference("orders").child(uuid).child(random).setValue(hashMap)
             .addOnSuccessListener {
+                // OrderFragment को अपडेट करने के लिए ViewModel से डेटा दोबारा लाना होगा
+                val fragment = supportFragmentManager.findFragmentByTag("OrderFragment") as? OrderFragment
+                fragment?.orderViewModel?.fetchOrderData()
 
                 Toast.makeText(this, "myOrder Successful", Toast.LENGTH_SHORT).show()
             }
